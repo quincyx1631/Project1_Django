@@ -51,7 +51,7 @@ class Recipe(models.Model):
     def __str__(self):
         return self.name
     
-class Instructions(models.Model):
+class Instruction(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='instructions')
     step_number = models.PositiveIntegerField()
     instruction_text = models.TextField()
