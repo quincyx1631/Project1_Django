@@ -36,21 +36,27 @@ class RecipeForm(forms.ModelForm):
             }),
         }
 
-class InstuctionForm(forms.ModelForm):
+class InstructionForm(forms.ModelForm):
     class Meta:
         model = Instruction
         fields = ('step_number', 'instruction_text')
         widgets = {
-            'step_number': forms.TextInput(attrs={
+            'step_number': forms.NumberInput(attrs={
                 'class': INPUT_CLASSES,
                 'placeholder': 'Enter Step number',
-                'type': 'number',
+                'min': '1',
             }),
             'instruction_text': forms.TextInput(attrs={
                 'class': INPUT_CLASSES,
-                'placeholder': "Enter Instuction"
+                'placeholder': "Enter Instruction"
             }),
         }
+
+    def clean_step_number(self):
+        step_number = self.cleaned_data.get('step_number')
+        if step_number is not None and step_number < 1:
+            raise forms.ValidationError("Step number must be positive")
+        return step_number
 
 class IngredientForm(forms.ModelForm):
     class Meta:

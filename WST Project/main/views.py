@@ -5,9 +5,14 @@ from django.contrib import messages
 from user_profile.models import Profile
 
 def home(request):
-    return render(request, 'main/home.html', {
-        'title': 'Home'
-    })
+    if request.user.is_authenticated:
+        # If user is logged in, redirect to recipes page
+        return redirect('recipe:view_recipes')
+    else:
+        # If user is not logged in, show the home page
+        return render(request, 'main/home.html', {
+            'title': 'Home'
+        })
 
 def signin(request):
     if request.method == "POST":
@@ -21,12 +26,12 @@ def signin(request):
             auth.login(request, user)
             messages.success(request, 'Login Successful. Welcome back!')
             print('Login Successful. Welcome back!')
-            return redirect('main:home')
+            return redirect('recipe:view_recipes')
         else:
             # No backend authenticated the credentials.
             messages.error(request, 'User does not exist. Please check your username and password!')
             print('User does not exist. Please check your password and username!')
-            return redirect('main:signin')
+            return redirect('recipe:signin')
 
     return render(request, 'main/signin.html', {
         'title': "Signin"
@@ -64,7 +69,7 @@ def signup(request):
                 #Redirect the user.
                 messages.success(request, 'Account created successfully. Welcome to Community!')
                 print("Account created successfully. Welcome to Community!")
-                return redirect('main:home')
+                return redirect('recipe:view_recipes')
         else:
             messages.error(request, "The password don't match.")
             print("The password don't match")
