@@ -39,11 +39,20 @@ def view_recipe_detail(request, recipe_primary_key):
     recipe = get_object_or_404(Recipe, pk=recipe_primary_key)
     ingredients = Ingredient.objects.filter(recipe_id=recipe_primary_key)
     instructions = Instruction.objects.filter(recipe_id=recipe_primary_key)
+    
+    # Get 3 related recipes from the same category, excluding the current recipe
+    related_recipes = Recipe.objects.filter(
+        category=recipe.category
+    ).exclude(
+        pk=recipe_primary_key
+    ).order_by('?')[:3]  # Random order, limit to 3
+    
     return render(request, 'recipe/view_recipe_detail.html', {
         'title': 'Recipe Detail',
         'recipe': recipe,
         'ingredients': ingredients,
         'instructions': instructions,
+        'related_recipes': related_recipes,
     })
 
 @login_required

@@ -7,7 +7,13 @@
     <div class="grid md:grid-cols-2 gap-6">
         <!--left side-->
         <div class="md:col-span-1">
-            <img src="{{ recipe.image.url }}" alt="Recipe Image">
+            <div class="relative h-96 md:h-[500px] w-full overflow-hidden rounded-lg shadow-lg bg-gray-100">
+                <img 
+                    src="{{ recipe.image.url }}" 
+                    alt="Recipe Image" 
+                    class="absolute inset-0 w-full h-full object-contain"
+                >
+            </div>
         </div>
         <!--right side-->
         <div class="md:col-span-1">
@@ -197,6 +203,35 @@
             </div>
         </div>
     </div>
+    {% if related_recipes %}
+    <div class="pt-16 mt-16">
+        <h2 class="text-xl font-bold mb-6">You Might Also Like</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {% for related_recipe in related_recipes %}
+            <div class="bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 flex flex-col">
+                <a href="{% url 'recipe:view_recipe_detail' recipe_primary_key=related_recipe.id %}">
+                    <img class="w-full h-40 object-cover rounded-t-lg" src="{{ related_recipe.image.url }}" alt="{{ related_recipe.name }}" />
+                </a>
+                <div class="p-4 flex flex-col h-full">
+                    <div class="flex-1">
+                        <h5 class="mb-2 text-lg font-bold tracking-tight text-gray-900 dark:text-white">{{ related_recipe.name }}</h5>
+                        <p class="mb-2 text-sm text-gray-700 dark:text-gray-400">Cooking time: {{ related_recipe.cook_time }}</p>
+                        <p class="mb-2 text-sm text-gray-700 dark:text-gray-400">Serving: {{ related_recipe.serving }}</p>
+                    </div>
+                    <div class="mt-auto">
+                        <a href="{% url 'recipe:view_recipe_detail' recipe_primary_key=related_recipe.id %}" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                            View Recipe
+                            <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
 </div>
 <div id="delete-recipe-modal" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
     <div class="relative p-4 w-full max-w-md max-h-full">
