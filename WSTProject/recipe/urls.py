@@ -1,6 +1,8 @@
 #urls.py
 from django.urls import path
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 app_name = 'recipe'
 urlpatterns = [
@@ -23,4 +25,4 @@ urlpatterns = [
     path('<int:recipe_primary_key>/instruction/create/', views.create_instruction, name='create_instruction'),
     path('<int:recipe_primary_key>/instruction/update/<int:instruction_primary_key>/', views.update_instruction, name='update_instruction'),
     path('<int:recipe_primary_key>/instruction/delete/<int:instruction_primary_key>/', views.delete_instruction, name='delete_instruction'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

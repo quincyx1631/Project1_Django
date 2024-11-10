@@ -3,6 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q
 from django.contrib import messages
+import os
+from django.conf import settings
 
 from .models import Category, Recipe, Ingredient, Instruction
 from .forms import RecipeForm, IngredientForm, InstructionForm
@@ -59,20 +61,44 @@ def view_recipe_detail(request, recipe_primary_key):
 def create_recipe(request):
     if request.method == 'POST':
         form = RecipeForm(request.POST, request.FILES)
-
         if form.is_valid():
             recipe = form.save(commit=False)
             recipe.created_by = request.user
+            
+            # Handle image upload
+            if 'image' in request.FILES:
+                image = request.FILES['image']
+                # Create a unique filename
+                import uuid
+                ext = image.name.split('.')[-1]
+                filename = f'{uuid.uuid4()}.{ext}'
+                
+                # Ensure media directory exists
+                import os
+                media_root = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'media')
+                if not os.path.exists(media_root):
+                    os.makedirs(media_root)
+                
+                # Save the file
+                filepath = os.path.join(media_root, filename)
+                with open(filepath, 'wb+') as destination:
+                    for chunk in image.chunks():
+                        destination.write(chunk)
+                
+                # Update recipe image field with the filename
+                recipe.image = filename
+            
             recipe.save()
             messages.success(request, 'Recipe created successfully.')
+            return redirect('recipe:view_recipe_detail', recipe_primary_key=recipe.pk)
         else:
             messages.error(request, 'Failed to create recipe.')
     else:
         form = RecipeForm()
-    form = RecipeForm()
+    
     return render(request, 'recipe/form.html', {
         'title': 'Create Recipe',
-        'form': form, 
+        'form': form,
     })
 
 @login_required
@@ -82,7 +108,34 @@ def update_recipe(request, recipe_primary_key):
     if request.method == 'POST':
         form = RecipeForm(request.POST, request.FILES, instance=recipe)
         if form.is_valid():
-            form.save()
+            # If there's a new image, handle the old one
+            if 'image' in request.FILES:
+                # Delete old image if it exists
+                if recipe.image:
+                    old_image_path = os.path.join(settings.MEDIA_ROOT, str(recipe.image))
+                    if os.path.exists(old_image_path):
+                        os.remove(old_image_path)
+                
+                # Handle new image upload
+                image = request.FILES['image']
+                import uuid
+                ext = image.name.split('.')[-1]
+                filename = f'{uuid.uuid4()}.{ext}'
+                
+                # Ensure media directory exists
+                media_root = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'media')
+                if not os.path.exists(media_root):
+                    os.makedirs(media_root)
+                
+                # Save the new file
+                filepath = os.path.join(media_root, filename)
+                with open(filepath, 'wb+') as destination:
+                    for chunk in image.chunks():
+                        destination.write(chunk)
+                
+                recipe.image = filename
+            
+            recipe.save()
             messages.success(request, "Recipe updated successfully.")
             return redirect('recipe:view_recipe_detail', recipe_primary_key=recipe_primary_key)
         else:
