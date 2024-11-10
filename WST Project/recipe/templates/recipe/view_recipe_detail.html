@@ -14,20 +14,20 @@
             <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
                 <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="default-tab" data-tabs-toggle="#default-tab-content" role="tablist">
                     <li class="me-2" role="presentation">
-                        <button class="inline-block p-4 border-b-2 rounded-t-lg" id="detail-tab" data-tabs-target="#detail" type="button" role="tab" aria-controls="detail" aria-selected="false">Detail</button>
+                        <button class="inline-block p-4 border-b-2 font-semibold rounded-t-lg" id="detail-tab" data-tabs-target="#detail" type="button" role="tab" aria-controls="detail" aria-selected="false">Detail</button>
                     </li>
                     <li class="me-2" role="presentation">
-                        <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="description-tab" data-tabs-target="#description" type="button" role="tab" aria-controls="description" aria-selected="false">Description</button>
+                        <button class="inline-block p-4 border-b-2 rounded-t-lg font-semibold hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="description-tab" data-tabs-target="#description" type="button" role="tab" aria-controls="description" aria-selected="false">Description</button>
                     </li>
                     <li class="me-2" role="presentation">
-                        <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="ingredients-tab" data-tabs-target="#ingredients" type="button" role="tab" aria-controls="ingredients" aria-selected="false">Ingredients</button>
+                        <button class="inline-block p-4 border-b-2 rounded-t-lg font-semibold hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="ingredients-tab" data-tabs-target="#ingredients" type="button" role="tab" aria-controls="ingredients" aria-selected="false">Ingredients</button>
                     </li>
                     <li class="me-2" role="presentation">
-                        <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="instructions-tab" data-tabs-target="#instructions" type="button" role="tab" aria-controls="instructions" aria-selected="false">Instructions</button>
+                        <button class="inline-block p-4 border-b-2 rounded-t-lg font-semibold hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="instructions-tab" data-tabs-target="#instructions" type="button" role="tab" aria-controls="instructions" aria-selected="false">Instructions</button>
                     </li>
                     {% if request.user == recipe.created_by %}
                     <li class="me-2" role="presentation">
-                        <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="action-tab" data-tabs-target="#action" type="button" role="tab" aria-controls="action" aria-selected="false">Action</button>
+                        <button class="inline-block p-4 border-b-2 rounded-t-lg font-semibold hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="action-tab" data-tabs-target="#action" type="button" role="tab" aria-controls="action" aria-selected="false">Action</button>
                     </li>
                     {% endif %}
                 </ul>
