@@ -1,0 +1,49 @@
+{% extends 'main/base.html' %}
+{% block title %} {{ title }} {% endblock %}
+{% load static %}
+{% block content %}
+<div class="max-w-screen-xl mx-auto">
+    {% if recipes %}
+    <h5 class="text-2xl font-bold text-gray-900 dark:text-white my-4 px-4">My Recipes</h5>
+    <div class="flex flex-wrap">
+        {% for recipe in recipes %}
+            <div class="w-full max-w-sm m-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                <a href="{% url 'recipe:view_recipe_detail' recipe_primary_key=recipe.id %}">
+                    <img class="w-full h-48 object-cover rounded-t-lg" src="{{ recipe.image.url }}" alt="" />
+                </a>
+                <div class="p-5">
+                    <a href="#">
+                        <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ recipe.name }}</h5>
+                    </a>
+                    <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Cooking time: {{ recipe.cook_time }}</p>
+                    <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Serving: {{ recipe.serving }}</p>
+                    <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Description: {{ recipe.description }}</p>
+                    <a href="{% url 'recipe:view_recipe_detail' recipe_primary_key=recipe.id %}" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                        Read more
+                        <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+        {% else %}
+        <div class="flex justify-center">
+            <img src="{% static 'empty-wst.svg' %}" class="h-96" alt="Empty">
+        </div>
+        <div class="flex justify-center">
+            <div class="flex-col text-center">
+                <div class="text-4xl font-extrabold tracking-tight">
+                    <h1>Oops, you didn't share any recipe.</h1>
+                </div>
+                <div>
+                    <p class="text-xl font-normal">It looks you didn't upload any recipe. Don't worry you can upload anytime.
+                        Try to click "Create Recipe" from the navigation bar to make sure that others can try your favorite recipe!
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,27 @@
+Internal Server Error: /recipe/create/
+Traceback (most recent call last):
+  File "/home/quincyx1631/.virtualenvs/venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/quincyx1631/.virtualenvs/venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/quincyx1631/.virtualenvs/venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/quincyx1631/Project1_Django/WSTProject/recipe/views.py", line 63, in create_recipe
+    if form.is_valid():
+  File "/home/quincyx1631/.virtualenvs/venv/lib/python3.10/site-packages/django/forms/forms.py", line 197, in is_valid
+    return self.is_bound and not self.errors
+  File "/home/quincyx1631/.virtualenvs/venv/lib/python3.10/site-packages/django/forms/forms.py", line 192, in errors
+    self.full_clean()
+  File "/home/quincyx1631/.virtualenvs/venv/lib/python3.10/site-packages/django/forms/forms.py", line 325, in full_clean
+    self._clean_fields()
+  File "/home/quincyx1631/.virtualenvs/venv/lib/python3.10/site-packages/django/forms/forms.py", line 333, in _clean_fields
+    self.cleaned_data[name] = field._clean_bound_field(bf)
+  File "/home/quincyx1631/.virtualenvs/venv/lib/python3.10/site-packages/django/forms/fields.py", line 703, in _clean_bound_field
+    return self.clean(value, bf.initial)
+  File "/home/quincyx1631/.virtualenvs/venv/lib/python3.10/site-packages/django/forms/fields.py", line 693, in clean
+    return super().clean(data)
+  File "/home/quincyx1631/.virtualenvs/venv/lib/python3.10/site-packages/django/forms/fields.py", line 204, in clean
+    value = self.to_python(value)
+  File "/home/quincyx1631/.virtualenvs/venv/lib/python3.10/site-packages/django/forms/fields.py", line 724, in to_python
+    from PIL import Image
+ModuleNotFoundError: No module named 'PIL'
