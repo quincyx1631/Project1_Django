@@ -20,7 +20,7 @@ def signin(request):
         password = request.POST['password']
 
         user = auth.authenticate(username=username, password=password)
-        
+
         if user is not None:
             # A backend authenticated the credentials.
             auth.login(request, user)
@@ -31,7 +31,7 @@ def signin(request):
             # No backend authenticated the credentials.
             messages.error(request, 'User does not exist. Please check your username and password!')
             print('User does not exist. Please check your password and username!')
-            return redirect('recipe:signin')
+            return redirect('main:signin')
 
     return render(request, 'main/signin.html', {
         'title': "Signin"
@@ -55,7 +55,7 @@ def signup(request):
                 messages.warning(request, 'The Username already taken')
                 print("The Username already taken")
                 return redirect('main:signup')
-            else: 
+            else:
                 #Create the user
                 new_user = User.objects.create_user(first_name=first_name, last_name=last_name, username=username, email=email, password=password)
                 new_user.save()
