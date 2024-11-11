@@ -1,8 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
-import os
-from django.conf import settings
 
 @login_required
 def view_profile(request):
@@ -20,38 +18,20 @@ def update_profile(request):
             email = request.POST['email']
             gender = request.POST['gender']
             image = request.FILES.get('image')
-            
-            # Profile Model
+
+            #Profile Model
             if image:
-                # Make sure the upload directory exists
-                upload_path = os.path.join(settings.MEDIA_ROOT, 'profile_images')
-                if not os.path.exists(upload_path):
-                    os.makedirs(upload_path)
-                
-                # Save the image with a unique name
-                import uuid
-                file_extension = os.path.splitext(image.name)[1]
-                unique_filename = f"profile_{uuid.uuid4()}{file_extension}"
-                image_path = os.path.join('profile_images', unique_filename)
-                
-                request.user.profile.image = image_path
-                
-                # Save the physical file
-                full_path = os.path.join(settings.MEDIA_ROOT, image_path)
-                with open(full_path, 'wb+') as destination:
-                    for chunk in image.chunks():
-                        destination.write(chunk)
-            
+                request.user.profile.image = image
             request.user.profile.gender = gender
             request.user.profile.save()
-            
-            # User Model
+
+            #User Model
             request.user.first_name = first_name
             request.user.last_name = last_name
             request.user.username = username
             request.user.email = email
             request.user.save()
-            
+
             messages.success(request, "Profile updated successfully! Your changes have been saved.")
             return redirect('profile:update_profile')
         except Exception as error:
