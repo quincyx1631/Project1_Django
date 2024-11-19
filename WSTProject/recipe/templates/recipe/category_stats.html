@@ -1,0 +1,146 @@
+{% extends 'main/base.html' %}
+{% block title %} {{ title }} {% endblock %}
+{% block content %}
+<div class="max-w-screen-xl mx-auto my-3">
+    <!-- Title Section -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Recipe Statistics</h1>
+        <p class="mt-2 text-gray-600 dark:text-gray-400">Overview of recipes by category and user</p>
+    </div>
+
+    <!-- Charts Grid Container -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Bar Chart Container -->
+        <div class="bg-white rounded-lg shadow dark:bg-gray-800 p-6">
+            <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Uploaded Recipes per Category</h2>
+            <div class="h-[600px]">
+                <canvas id="categoryChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Pie Chart Container -->
+        <div class="bg-white rounded-lg shadow dark:bg-gray-800 p-6">
+            <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Uploaded Recipe by Users</h2>
+            <div class="h-[600px]">
+                <canvas id="userChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js Script -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Bar Chart - Categories
+    fetch('{% url "recipe:category_data" %}')
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('categoryChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    ...data,
+                    datasets: [{
+                        ...data.datasets[0],
+                        maxBarThickness: 50  
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Recipes',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                },
+                                padding: {
+                                    bottom: 10
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(156, 163, 175, 0.2)'
+                            },
+                            ticks: {
+                                stepSize: 1,  
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Categories',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                },
+                                padding: {
+                                    top: 20
+                                }
+                            },
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: {
+                                    size: 12
+                                },
+                                maxRotation: 45,
+                                minRotation: 45,
+                                padding: 15,  
+                                autoSkip: false  
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    layout: {
+                        padding: {
+                            top: 20,
+                            right: 35,
+                            bottom: 40, 
+                            left: 35
+                        }
+                    },
+                    barPercentage: 0.5,  
+                    categoryPercentage: 0.9,  
+                }
+            });
+        });
+
+    // Pie Chart - Users 
+    fetch('{% url "recipe:user_data" %}')
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('userChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'pie',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                font: {
+                                    size: 12
+                                },
+                                padding: 20
+                            }
+                        }
+                    }
+                }
+            });
+        });
+</script>
+{% endblock %}

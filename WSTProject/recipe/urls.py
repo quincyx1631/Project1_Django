@@ -23,4 +23,8 @@ urlpatterns = [
     path('<int:recipe_primary_key>/instruction/create/', views.create_instruction, name='create_instruction'),
     path('<int:recipe_primary_key>/instruction/update/<int:instruction_primary_key>/', views.update_instruction, name='update_instruction'),
     path('<int:recipe_primary_key>/instruction/delete/<int:instruction_primary_key>/', views.delete_instruction, name='delete_instruction'),
+    #STATISTICS PAGE
+    path('category-stats/', views.recipe_category_stats, name='category_stats'),
+    path('category-data/', views.get_category_data, name='category_data'),
+    path('user-data/', views.get_user_data, name='user_data'),
 ]

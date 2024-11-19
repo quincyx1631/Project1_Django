@@ -4,6 +4,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q
 from django.contrib import messages
 
+from django.db.models import Count
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+
 from .models import Category, Recipe, Ingredient, Instruction
 from .forms import RecipeForm, IngredientForm, InstructionForm
 
@@ -304,3 +308,98 @@ def delete_instruction(request, recipe_primary_key, instruction_primary_key):
         'ingredients': ingredients,
         'instructions': instructions,
     })
+
+@login_required
+def recipe_category_stats(request):
+    context = {
+        'title': 'Recipe Statistics',  # This will show in your base template title
+        'categories': Category.objects.all(),  # For consistency with your existing view
+    }
+    return render(request, 'recipe/category_stats.html', context)
+
+def get_category_data(request):
+    category_data = Recipe.objects.values('category__name')\
+                                .annotate(count=Count('id'))\
+                                .order_by('category__name')
+    
+    all_categories = Category.objects.values_list('name', flat=True)
+    category_counts = {category: 0 for category in all_categories}
+    
+    for item in category_data:
+        category_counts[item['category__name']] = item['count']
+    
+    data = {
+        'labels': list(category_counts.keys()),
+        'datasets': [{
+            'label': 'Number of Recipes',
+            'data': list(category_counts.values()),
+            'backgroundColor': [
+                'rgba(59, 130, 246, 0.5)',  # Tailwind blue-500
+                'rgba(99, 102, 241, 0.5)',  # Tailwind indigo-500
+                'rgba(139, 92, 246, 0.5)',  # Tailwind purple-500
+                'rgba(236, 72, 153, 0.5)',  # Tailwind pink-500
+                'rgba(239, 68, 68, 0.5)',   # Tailwind red-500
+                'rgba(245, 158, 11, 0.5)',  # Tailwind amber-500
+                'rgba(16, 185, 129, 0.5)',  # Tailwind emerald-500
+                'rgba(14, 165, 233, 0.5)',  # Tailwind sky-500
+                'rgba(168, 85, 247, 0.5)',  # Tailwind purple-500
+                'rgba(251, 146, 60, 0.5)',  # Tailwind orange-500
+            ],
+            'borderColor': [
+                'rgb(59, 130, 246)',
+                'rgb(99, 102, 241)',
+                'rgb(139, 92, 246)',
+                'rgb(236, 72, 153)',
+                'rgb(239, 68, 68)',
+                'rgb(245, 158, 11)',
+                'rgb(16, 185, 129)',
+                'rgb(14, 165, 233)',
+                'rgb(168, 85, 247)',
+                'rgb(251, 146, 60)',
+            ],
+            'borderWidth': 2
+        }]
+    }
+    
+    return JsonResponse(data)
+
+
+def get_user_data(request):
+    user_data = Recipe.objects.values('created_by__username')\
+                             .annotate(count=Count('id'))\
+                             .order_by('-count')
+    
+    data = {
+        'labels': [item['created_by__username'] for item in user_data],
+        'datasets': [{
+            'label': 'Number of Recipes',
+            'data': [item['count'] for item in user_data],
+            'backgroundColor': [
+                'rgba(59, 130, 246, 0.7)',
+                'rgba(99, 102, 241, 0.7)',
+                'rgba(139, 92, 246, 0.7)',
+                'rgba(236, 72, 153, 0.7)',
+                'rgba(239, 68, 68, 0.7)',
+                'rgba(245, 158, 11, 0.7)',
+                'rgba(16, 185, 129, 0.7)',
+                'rgba(14, 165, 233, 0.7)',
+                'rgba(168, 85, 247, 0.7)',
+                'rgba(251, 146, 60, 0.7)',
+            ],
+            'borderColor': [
+                'rgb(59, 130, 246)',
+                'rgb(99, 102, 241)',
+                'rgb(139, 92, 246)',
+                'rgb(236, 72, 153)',
+                'rgb(239, 68, 68)',
+                'rgb(245, 158, 11)',
+                'rgb(16, 185, 129)',
+                'rgb(14, 165, 233)',
+                'rgb(168, 85, 247)',
+                'rgb(251, 146, 60)',
+            ],
+            'borderWidth': 2
+        }]
+    }
+    
+    return JsonResponse(data)
